@@ -57,7 +57,7 @@ class Text:
             'num_students_label': "Numero Studenti:",
             'address_label': "Indirizzo",
             'section_label': "Sezione",
-            'add_new_class_heading': "Aggiungi Nuova Classe",
+            'add_new_class_heading': "Aggiungi Classe",
             'class_name_label': "Nome Classe:",
             'class_name_info': "esempio: input ''3EIN'' prenderà 3 come anno e EIN come sezione",
             'num_students_label': "Numero Studenti:",

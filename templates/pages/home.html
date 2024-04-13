@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ Text['page_titles'][0] }}
+{% endblock %}
+
+{% block content %}
+<script>
+    // when the page loads set hiddenflag to true
+    var hiddenflag = true;
+
+    function toggle(id) {
+        var elements = document.querySelectorAll('[id="' + id.replace("button", "") + '"]');
+        console.log(elements);  
+        if (hiddenflag) {
+            show(elements);
+            hiddenflag = false;
+        } else {
+            hide(elements);
+            hiddenflag = true;
+        }
+    }
+
+    function show(elements) {
+        elements.forEach(function(element) {
+            element.classList.remove("hidden");
+        });
+    }
+
+    function hide(elements) {
+        elements.forEach(function(element) {
+            element.classList.add("hidden");
+        });
+    }
+
+    function hideOverlay() {
+        var overlay = document.getElementById("addnewclass");
+        hiddenflag = true;
+        hide([overlay]);
+    }
+</script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>{{ Text['page_titles']['home'] }}</title>
+    <style>
+        .add-class-container {
+            width: 200px;
+            height: 100px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .add-class-container:hover {
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-class-text {
+            font-weight: bold;
+        }
+
+        .add-class-button {
+            width: 40px;
+            height: 40px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .add-class-button:hover {
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .add-class-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .add-class-popup {
+            width: 400px;
+            height: 300px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .closebutton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="add-class-container">
+        <div class="add-class-text">{{ Text['add_new_class_heading'] }}</div>
+        <div class="add-class-button" id="addnewclassbutton" onclick="toggle(id);">+</div>
+    </div>
+
+    <div class="hidden add-class-overlay" id="addnewclass">
+        <div class="add-class-popup">
+            <div class="closebutton" onclick="hideOverlay();" style="color: white; font-size: 24px;">&times;</div>
+        <div class="hidden add-class-popup" id="addnewclass">
+            {% include 'components/addnewclass_snippet.html' %}
+        </div>
+    </div>
+    
+</head>
+{% endblock %}

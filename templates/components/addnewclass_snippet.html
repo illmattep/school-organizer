@@ -1,0 +1,139 @@
+
+<div id="addnewclass" class="container">
+    <h2>{{ Text['add_new_class_heading'] }}</h2>
+    <form method="post">
+        <input type="hidden" id="form_identifier" name="form_identifier" value="addnewclass"> <!-- This is used to identify the form in the backend and know what -->
+        <div>
+            <label for="name">{{ Text['class_name_label'] }}</label>
+            <input class="smallsize" type="text" id="name" name="name" required placeholder="{{ Text['class_name_info'] }}">
+            <p class="info-text"></p>
+        </div>
+        <div>
+            <label for="num_students">{{ Text['num_students_label'] }}</label>
+            <input class="smallsize" type="number" id="num_students" name="num_students" required>
+        </div>
+        <div>
+            <label for="address">{{ Text['address_label'] }}</label>
+            <select id="address" name="address" required>
+                {% for address in addresses %}
+                    <option value="{{ address }}">{{ address }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit">{{ Text['submit_button_text'] }}</button>
+    </form>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="error-message">
+                <p>
+                    {% for message in messages %}
+                        {{ message }}
+                    {% endfor %}
+                </p>
+                <button onclick="location.reload()">X</button>
+            </div>
+        {% endif %}
+    {% endwith %}
+</div>
+
+<style>
+    .bodycontainer {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background-color: #f7fafc;
+    }
+
+    .container {
+        max-width: 600px;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2 {
+        font-size: 24px;
+        font-weight: bold;
+        padding-bottom: 8px;
+    }
+
+    ul {
+        margin-top: 16px;
+        padding-left: 20px;
+    }
+
+    li {
+        margin-bottom: 8px;
+    }
+
+    label {
+        display: block;
+        margin-top: 8px;
+        font-weight: bold;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        margin-top: 4px;
+    }
+
+    .info-text {
+        color: #6b7280;
+        font-size: 14px;
+        margin-top: 4px;
+    }
+
+    button {
+        margin-top: 16px;
+        background-color: #3b82f6;
+        color: #ffffff;
+        font-weight: bold;
+        padding: 8px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #2563eb;
+    }
+
+    .error-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #ec5a409a;
+        color: #ffffff;
+        padding: 8px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 300px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        /* add backdrop blur */
+        backdrop-filter: blur(4px);
+    }
+
+    .error-message p {
+        margin: 0;
+    }
+
+    .error-message button {
+        background-color: transparent;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+    }
+
+    .smallsize {
+        font-size: medium;
+    }
+</style>
