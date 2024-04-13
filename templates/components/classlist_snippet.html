@@ -2,49 +2,50 @@
     function sortTable(columnName) {
         var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
         table = document.getElementById("table");
-    
+
         if (!table) {
             console.log("Table not found");
             return;
         }
-    
+
         // Find the index of the column
         var column = Array.from(table.rows[0].cells).findIndex(cell => cell.id === columnName);
         if (column === -1) {
             console.log("Column not found");
             return;
         }
-    
+
         switching = true;
-        dir = "asc"; 
-    
+        dir = "asc";
+
         while (switching) {
             switching = false;
-            rows = table.rows;
-    
-            for (i = 1; i < (rows.length - 1); i++) {
+            rows = Array.from(table.rows).slice(1); // Exclude the table header row
+
+            for (i = 0; i < (rows.length - 1); i++) {
                 shouldSwitch = false;
                 x = rows[i].getElementsByTagName("td")[column];
                 y = rows[i + 1].getElementsByTagName("td")[column];
-    
+
                 if (x && y) {
-                    x = x.innerText;
-                    y = y.innerText;
-    
+                    // Detect the type of the data
+                    var xValue = isNaN(x.innerText) ? x.innerText.toLowerCase() : parseFloat(x.innerText);
+                    var yValue = isNaN(y.innerText) ? y.innerText.toLowerCase() : parseFloat(y.innerText);
+
                     if (dir === "asc") {
-                        if (x.toLowerCase() > y.toLowerCase()) {
+                        if (xValue > yValue) {
                             shouldSwitch = true;
                             break;
                         }
                     } else if (dir === "desc") {
-                        if (x.toLowerCase() < y.toLowerCase()) {
+                        if (xValue < yValue) {
                             shouldSwitch = true;
                             break;
                         }
                     }
                 }
             }
-    
+
             if (shouldSwitch) {
                 rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
                 switching = true;
@@ -58,7 +59,6 @@
         }
     }
 </script>
-
 <h1>{{ Text['page_titles']['classes_list'] }}</h1>
 <form method="GET" class="text-right">
     <input type="text" name="search" value="{{ request.args.get('search', '') }}">
@@ -106,4 +106,22 @@
     </tbody>
 </table>
 
-{{ pagination.links }}
+<div class="pagination">
+    {{ pagination_links|safe }}
+</div>
+
+<style>
+    .pagination a {
+        margin-inline: 10px; /* Adjust as needed */
+    }
+    
+    .pagination {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    .pagination .current-page {
+        color: #26ccff; /* Change to the color you want */
+    }
+</style>

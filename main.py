@@ -5,6 +5,7 @@ from config import Config
 from POSTHANDLER import PostHandler
 from flask_sqlalchemy import SQLAlchemy # Import the SQLAlchemy class from the flask_sqlalchemy module to work with the database
 from flask_paginate import Pagination, get_page_parameter
+from utils import Utils
 
 Text = Text().texts # Get the text dictionary
 Config = Config() # Get the configuration object
@@ -12,6 +13,7 @@ language = Config.LANGUAGE # Get the language
 c = Config.c # Get the cursor object to access the database
 conn = Config.conn # Get the connection object to the database
 PostHandler = PostHandler() # Create the PostHandler object
+utils = Utils() # Create the utils object
 
 # Create the Flask app
 app = Flask(__name__) # Create the Flask app
@@ -56,6 +58,7 @@ def newclass(): # Function to handle the main page request
         return render_template('pages/addnewclass.html', classes=classes, addresses=Config.ADDRESSES, language=language, Text=Text) # Render the 'index.html' template with the classes, addresses, language, and Text object
 
 
+
 # delete class page with a form to delete a class
 @app.route('/deleteclass/<int:id>', methods=['POST'])
 def deleteclass(id):
@@ -92,8 +95,9 @@ def classlist():
         total = c.fetchone()[0]
 
         pagination = Pagination(page=page, total=total, per_page=per_page, search=search, record_name='classes')
+        pagination_links = utils.get_pagination_links(page, pagination.total_pages)
 
-        return render_template('pages/viewclasses.html', classes=classes, addresses=Config.ADDRESSES, language=language, Text=Text, pagination=pagination)
+        return render_template('pages/viewclasses.html', classes=classes, addresses=Config.ADDRESSES, language=language, Text=Text, pagination=pagination, pagination_links=pagination_links)
 
 
 # home page with a dashboard of functionalities
