@@ -3,6 +3,8 @@ import sqlite3
 from Text import Text
 from config import Config
 from POSTHANDLER import PostHandler
+from flask_sqlalchemy import SQLAlchemy # Import the SQLAlchemy class from the flask_sqlalchemy module to work with the database
+from flask_paginate import Pagination, get_page_parameter
 
 Text = Text().texts # Get the text dictionary
 Config = Config() # Get the configuration object
@@ -13,6 +15,8 @@ PostHandler = PostHandler() # Create the PostHandler object
 
 # Create the Flask app
 app = Flask(__name__) # Create the Flask app
+app.config['SQLALCHEMY_DATABASE_URI'] = Config.db # Set the URI for the database
+db = SQLAlchemy(app)
 app.secret_key = 'b3dsm0v3rs' # Set the secret key for the app
 # Create the 'classes' table in the database
 c.execute('''CREATE TABLE IF NOT EXISTS classes (
@@ -51,7 +55,48 @@ def newclass(): # Function to handle the main page request
         classes = c.fetchall() # Fetch all rows from the result of the query    
         return render_template('pages/addnewclass.html', classes=classes, addresses=Config.ADDRESSES, language=language, Text=Text) # Render the 'index.html' template with the classes, addresses, language, and Text object
 
-# home page with a list of classes
+
+# delete class page with a form to delete a class
+@app.route('/deleteclass/<int:id>', methods=['POST'])
+def deleteclass(id):
+    # Execute the SQL command to delete the class
+    c.execute("DELETE FROM classes WHERE id = ?", (id,))
+    # Commit the changes
+    conn.commit()
+    # Redirect back to the class list
+    return redirect(url_for('classlist'))
+
+
+# classlist table page with a list of classes in a table
+@app.route('/viewclasses', methods=['GET', 'POST']) # Handle GET requests
+def classlist():
+    if request.method == 'POST':
+        pass
+    else:
+        search = request.args.get('search', '')
+        sort = request.args.get('sort', 'name')
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        per_page = request.args.get('per_page', type=int, default=10)
+
+        # Calculate offset for pagination
+        offset = (page - 1) * per_page
+
+        # Use raw SQL for search and sort
+        query = f"SELECT * FROM classes WHERE name LIKE ? ORDER BY {sort} LIMIT ? OFFSET ?"
+        params = ('%' + search + '%', per_page, offset)
+        c.execute(query, params)
+        classes = c.fetchall()
+
+        # Get total number of classes for pagination
+        c.execute("SELECT COUNT(*) FROM classes WHERE name LIKE ?", ('%' + search + '%',))
+        total = c.fetchone()[0]
+
+        pagination = Pagination(page=page, total=total, per_page=per_page, search=search, record_name='classes')
+
+        return render_template('pages/viewclasses.html', classes=classes, addresses=Config.ADDRESSES, language=language, Text=Text, pagination=pagination)
+
+
+# home page with a dashboard of functionalities
 @app.route('/', methods=['GET', 'POST']) # Handle GET requests
 @app.route('/home', methods=['GET', 'POST']) # Handle GET requests
 @app.route('/index', methods=['GET', 'POST']) # Handle GET requests

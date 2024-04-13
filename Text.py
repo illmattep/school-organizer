@@ -10,6 +10,7 @@ class Text:
             'page_titles': {
                 'home': 'Home',
                 'classes': 'Classes',
+                'classes_list': 'Classes List',
                 'teachers': 'Teachers',
                 'students': 'Students',
             },
@@ -32,6 +33,16 @@ class Text:
             'num_students_label': "Number of Students:",
             'address_label': "Address:",
             'submit_button_text': "Add",
+            'class_table': {
+                'id': 'ID',
+                'name': 'Name',
+                'year': 'Year',
+                'num_students': 'Number of Students',
+                'creation_date': 'Creation Date',
+                'modification_date': 'Modification Date',
+                'section': 'Section',
+                'address': 'Address',
+            },
             # Add more text lines as needed
         }
 
@@ -40,6 +51,7 @@ class Text:
             'page_titles': {
                 'home': 'Home',
                 'classes': 'Classi',
+                'classes_list': 'Lista Classi',
                 'teachers': 'Insegnanti',
                 'students': 'Studenti',
             },
@@ -63,6 +75,16 @@ class Text:
             'num_students_label': "Numero Studenti:",
             'address_label': "Indirizzo:",
             'submit_button_text': "Aggiungi",
+            'class_table': {
+                'id': 'ID',
+                'name': 'Nome',
+                'year': 'Anno',
+                'num_students': 'Numero Studenti',
+                'creation_date': 'Data di Creazione',
+                'modification_date': 'Data di Modifica',
+                'section': 'Sezione',
+                'address': 'Indirizzo',
+            },
             # Aggiungi altre righe di testo se necessario
         }
         self.texts = self.valueof(language)

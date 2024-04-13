@@ -1,0 +1,109 @@
+<script>
+    function sortTable(columnName) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("table");
+    
+        if (!table) {
+            console.log("Table not found");
+            return;
+        }
+    
+        // Find the index of the column
+        var column = Array.from(table.rows[0].cells).findIndex(cell => cell.id === columnName);
+        if (column === -1) {
+            console.log("Column not found");
+            return;
+        }
+    
+        switching = true;
+        dir = "asc"; 
+    
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+    
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("td")[column];
+                y = rows[i + 1].getElementsByTagName("td")[column];
+    
+                if (x && y) {
+                    x = x.innerText;
+                    y = y.innerText;
+    
+                    if (dir === "asc") {
+                        if (x.toLowerCase() > y.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir === "desc") {
+                        if (x.toLowerCase() < y.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+            }
+    
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount === 0 && dir === "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
+
+<h1>{{ Text['page_titles']['classes_list'] }}</h1>
+<form method="GET" class="text-right">
+    <input type="text" name="search" value="{{ request.args.get('search', '') }}">
+    <select name="sort">
+        <option value="name" {% if request.args.get('sort', '') == 'name' %}selected{% endif %}>Name</option>
+        <option value="description" {% if request.args.get('sort', '') == 'description' %}selected{% endif %}>Description</option>
+    </select>
+    <select name="per_page">
+        <option value="10" {% if request.args.get('per_page', '') == '10' %}selected{% endif %}>10</option>
+        <option value="20" {% if request.args.get('per_page', '') == '20' %}selected{% endif %}>20</option>
+        <option value="50" {% if request.args.get('per_page', '') == '50' %}selected{% endif %}>50</option>
+    </select>
+    <button type="submit">Apply</button>
+</form>
+
+<table class="min-w-full divide-y divide-gray-200" id="table">
+    <thead>
+        <tr>
+            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-50" id="id" onclick="sortTable('id')"><a href="#">{{ Text['class_table']['id'] }}</a></th>
+            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-50" id="name" onclick="sortTable('name')"><a href="#">{{ Text['class_table']['name'] }}</a></th>
+            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-50" id="year" onclick="sortTable('year')"><a href="#">{{ Text['class_table']['year'] }}</a></th>
+            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-50" id="num_students" onclick="sortTable('num_students')"><a href="#">{{ Text['class_table']['num_students'] }}</a></th>
+            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-50" id="section" onclick="sortTable('section')"><a href="#">{{ Text['class_table']['section'] }}</a></th>
+            <th class="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase bg-gray-50" id="address" onclick="sortTable('address')"><a href="#">{{ Text['class_table']['address'] }}</a></th>
+            <!-- Add more columns as needed -->
+        </tr>
+    </thead>
+    <tbody class="bg-white divide-y divide-gray-200">
+        {% for class in classes %}
+        <tr>
+            <td class="px-6 py-4 whitespace-nowrap" id="classid">{{ class[0] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap" id="classname">{{ class[1] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap" id="classyear">{{ class[2] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap" id="classnum_students">{{ class[3] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap" id="classsection">{{ class[4] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap" id="classaddress">{{ class[7] }}</td>
+            <!-- Add more columns as needed -->
+            <td class="px-6 py-4 whitespace-nowrap">
+                <form method="POST" action="{{ url_for('deleteclass', id=class[0]) }}">
+                    <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{{ pagination.links }}
