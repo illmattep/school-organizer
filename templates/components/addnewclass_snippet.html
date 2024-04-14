@@ -1,5 +1,5 @@
 
-<div id="addnewclass" class="container">
+<div id="addnewclass" class="newclasscontainer">
     <h2>{{ Text['add_new_class_heading'] }}</h2>
     <form method="post">
         <input type="hidden" id="form_identifier" name="form_identifier" value="addnewclass"> <!-- This is used to identify the form in the backend and know what -->
@@ -36,8 +36,8 @@
         background-color: #f7fafc;
     }
 
-    .container {
-        max-width: 600px;
+    .newclasscontainer {
+        min-width:calc(100% - 40px); /* This is to make the form responsive */
         padding: 20px;
         background-color: #ffffff;
         border-radius: 8px;
@@ -91,35 +91,6 @@
 
     button:hover {
         background-color: #2563eb;
-    }
-
-    .error-message {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #ec5a409a;
-        color: #ffffff;
-        padding: 8px;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 300px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-        /* add backdrop blur */
-        backdrop-filter: blur(4px);
-    }
-
-    .error-message p {
-        margin: 0;
-    }
-
-    .error-message button {
-        background-color: transparent;
-        border: none;
-        color: #ffffff;
-        cursor: pointer;
     }
 
     .smallsize {

@@ -1,7 +1,6 @@
-from config import Config
+from config import settings
 
-Config = Config()
-language = Config.LANGUAGE
+language = settings.LANGUAGE
 
 class Text:
     def __init__(self):
@@ -34,6 +33,10 @@ class Text:
             'address_label': "Address:",
             'submit_button_text': "Add",
             'class_table': {
+                'filters': {
+                    'search_placeholder': 'Search...',
+                    'search_button': 'Search',
+                },
                 'id': 'ID',
                 'name': 'Name',
                 'year': 'Year',
@@ -42,6 +45,13 @@ class Text:
                 'modification_date': 'Modification Date',
                 'section': 'Section',
                 'address': 'Address',
+            },
+            'sidebar': {
+                'home': 'Home',
+                'newclass': 'Add Class',
+                'classlist': 'Class List',
+                'teachers': 'Teachers',
+                'settings': 'Settings',
             },
             # Add more text lines as needed
         }
@@ -76,6 +86,10 @@ class Text:
             'address_label': "Indirizzo:",
             'submit_button_text': "Aggiungi",
             'class_table': {
+                'filters': {
+                    'search_placeholder': 'Cerca...',
+                    'search_button': 'Cerca',
+                },
                 'id': 'ID',
                 'name': 'Nome',
                 'year': 'Anno',
@@ -84,6 +98,13 @@ class Text:
                 'modification_date': 'Data di Modifica',
                 'section': 'Sezione',
                 'address': 'Indirizzo',
+            },
+            'sidebar': {
+                'home': 'Home',
+                'newclass': 'aggiungi classe',
+                'classlist': 'Lista classi',
+                'teachers': 'Insegnanti',
+                'settings': 'Impostazioni',
             },
             # Aggiungi altre righe di testo se necessario
         }

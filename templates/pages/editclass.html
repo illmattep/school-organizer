@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>Edit Class</title>
+</head>
+
+<body class="bg-gray-100">
+    <div class="container p-4 mx-auto">
+        <h1 class="mb-4 text-2xl font-bold">Edit Class</h1>
+
+        <!-- Class data form -->
+        <form class="px-8 pt-6 pb-8 mb-4 bg-white rounded shadow-md">
+            <!-- Class data fields -->
+            <div class="mb-4">
+                <label class="block mb-2 text-sm font-bold text-gray-700" for="className">
+                    Class Name
+                </label>
+                <input class="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="className" type="text" placeholder="Enter class name">
+            </div>
+
+            <!-- Add more class data fields here -->
+
+            <!-- Save button -->
+            <div class="flex items-center justify-between">
+                <button class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline" type="button">
+                    Save
+                </button>
+                <button class="px-4 py-2 font-bold text-white bg-red-500 rounded hover:bg-red-700 focus:outline-none focus:shadow-outline" type="button">
+                    Delete
+                </button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

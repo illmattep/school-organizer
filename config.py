@@ -43,3 +43,6 @@ class Config:
         self.db = 'school.db'
         self.conn = sqlite3.connect(self.db, check_same_thread=False) # Create a connection object
         self.c = self.conn.cursor() # Create a cursor object to execute SQL queries on the database 
+
+settings = Config() # Get the configuration object modifiable by the user
+
