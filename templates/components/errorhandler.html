@@ -1,0 +1,98 @@
+<script>
+    window.onload = function() {
+        var flashMessage = document.getElementById('flash-message');
+        var closeButton = document.querySelector('.close-button');
+
+        if (flashMessage) {
+            flashMessage.addEventListener('animationend', function() {
+                if (flashMessage.classList.contains('warning') || flashMessage.classList.contains('success')) {
+                    flashMessage.remove();
+                }
+            });
+
+            closeButton.addEventListener('click', function() {
+                flashMessage.remove();
+            });
+        }
+    };
+</script>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+    {% for category, message in messages %}
+        <div id="flash-message" class="flash-message {{ category }}">
+            <div class="message-container">
+                <p>{{ message }}</p>
+                <button class="close-button">X</button>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endwith %}
+<style>
+
+    .flash-message {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 8px;
+        border-radius: 8px;
+        width: 300px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(4px);
+    }
+
+    .message-container {
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .flash-message.error {
+        background-color: #dc262691;
+        backdrop-filter: blur(4px);
+    }
+
+    .flash-message.success {
+        background-color: #16a34a8e;
+        backdrop-filter: blur(4px);
+        animation: fadeOut 5s forwards;
+    }
+
+    .flash-message.warning {
+        background-color: #f59f0b86;
+        backdrop-filter: blur(4px);
+        animation: fadeOut 5s forwards;
+    }
+
+    .flash-message p {
+        margin: 0;
+    }
+
+    .flash-message button {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        /* align vertically as well */
+        align-content: center;
+        background-color: transparent;
+        border: none;
+        color: #ffffff;
+        cursor: pointer;
+        margin:0%;
+    }
+
+    .flash-message button:hover {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+
+
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; }
+    }
+</style>
