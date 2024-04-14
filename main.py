@@ -16,7 +16,7 @@ utils = Utils() # Create the utils object
 
 # Create the Flask app
 app = Flask(__name__) # Create the Flask app
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://settings.db' # Set the URI for the database
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///settings.db' # Set the URI for the database
 db = SQLAlchemy(app)
 app.secret_key = 'b3dsm0v3rs' # Set the secret key for the app
 # Create the 'classes' table in the database
