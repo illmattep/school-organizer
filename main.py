@@ -97,11 +97,22 @@ def classlist():
 @app.route('/editclass/<int:id>', methods=['GET', 'POST'])
 def editclass(id):
     if request.method == 'POST':
-        pass
+        if request.form.get('form_identifier') == 'editclassfromlist':
+            c.execute("SELECT * FROM classes WHERE id = ?", (id,))
+            class_data = c.fetchone()
+            return render_template('pages/editclass.html', class_data=class_data, addresses=settings.ADDRESSES, language=language, Text=Text)
     else:
         c.execute("SELECT * FROM classes WHERE id = ?", (id,))
         class_data = c.fetchone()
         return render_template('pages/editclass.html', class_data=class_data, addresses=settings.ADDRESSES, language=language, Text=Text)
+
+# settings page with a form to edit the settings
+@app.route('/settings', methods=['GET', 'POST'])
+def settings():
+    if request.method == 'POST':
+        if request.form.get('form_iedntifier') == 'savesettings':
+            print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
+    return render_template('settings.html', settings=settings, language=language, Text=Text)
 
 # home page with a dashboard of functionalities
 @app.route('/', methods=['GET', 'POST']) # Handle GET requests

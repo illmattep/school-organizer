@@ -89,7 +89,7 @@
             <td class="px-6 py-4 whitespace-nowrap" id="classname">{{ class[1] }}</td>
             <td class="px-6 py-4 whitespace-nowrap" id="classyear">{{ class[2] }}</td>
             <td class="px-6 py-4 whitespace-nowrap" id="classnum_students">{{ class[3] }}</td>
-            <td class="px-6 py-4 whitespace-nowrap" id="classsection">{{ class[4] }}</td>
+            <td class="px-6 py-4 whitespace-nowrap" id="classsection">{{ class[6] }}</td>
             <td class="px-6 py-4 whitespace-nowrap" id="classaddress">{{ class[7] }}</td>
             <!-- Add more columns as needed -->
             <td class="flex px-6 py-4 space-x-8 whitespace-nowrap">
@@ -97,6 +97,7 @@
                     <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
                 </form>
                 <form method="POST" action="{{ url_for('editclass', id=class[0]) }}">
+                    <input type="hidden" id="form_identifier" name="form_identifier" value="editclassfromlist"> <!-- This is used to identify the form in the backend and know what -->
                     <button type="submit" class="text-yellow-500 hover:text-yellow-400">Edit</button>
                 </form>
             </td>
