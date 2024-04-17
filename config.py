@@ -3,11 +3,17 @@ import os
 # Configuration class
 class Config:
     def __init__(self):
+        # Debug mode
+        self.DEBUG = True
+
         # Language
-        self.LANGUAGE = 'italiano' # Either 'english' or 'italiano'
+        self.LANGUAGE = 'english' # Either 'english' or 'italiano'
 
         # Number of years
         self.NUM_YEARS = 5
+
+        # Path to languages
+        self.LANGUAGES_PATH = './languages'
 
         # List of class years
         self.CLASS_YEARS = list(range(1, self.NUM_YEARS + 1))

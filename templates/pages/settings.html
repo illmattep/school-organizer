@@ -6,7 +6,31 @@
 
 {% block content %}
 
-
-
+<!--input form with all the input values to manage settings-->
+<head>
+    <!--import tailwind-->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<form action="/settings" method="post" class="max-w-md mx-auto">
+    <input type="hidden" name="form_" value="editsettings">
+    <label for="language" class="block">Language</label>
+    <select name="language" class="w-full px-4 py-2 my-2 border rounded">
+        {% for language in installed_languages %}
+            <option value="{{ language }}" {% if language == settings['language'] %}selected{% endif %}>{{ language }}</option>
+        {% endfor %}
+        <!-- todo for language in languages -->
+    </select>   
+    <select name="language_to_translate" class="w-full px-4 py-2 my-2 border rounded">
+        {% for language in all_languages %}
+            <option value="{{ language }}">{{ language }}</option>
+        {% endfor %}
+        <!-- todo for language in languages -->
+    </select>   
+    <label for="path_database" class="block">Path database</label>
+    <input type="text" name="path_database" class="w-full px-4 py-2 my-2 border rounded" value="">
+    <label for="path_backup" class="block">Path backup</label>
+    
+    <button type="submit" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600">Save Changes</button>
+</form>
 
 {% endblock %}

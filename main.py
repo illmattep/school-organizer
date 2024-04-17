@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 import sqlite3
-from Text import Text
+from Text import Text as TextClass
 from config import settings
 from POSTHANDLER import PostHandler
 from flask_sqlalchemy import SQLAlchemy # Import the SQLAlchemy class from the flask_sqlalchemy module to work with the database
 from flask_paginate import Pagination, get_page_parameter
 from utils import Utils
 
-Text = Text().texts # Get the text dictionary
+Text = TextClass().texts # Get the text dictionary
 language = settings.LANGUAGE # Get the language
 c = settings.c # Get the cursor object to access the database
 conn = settings.conn # Get the connection object to the database
@@ -106,14 +106,16 @@ def editclass(id):
         class_data = c.fetchone()
         return render_template('pages/editclass.html', class_data=class_data, addresses=settings.ADDRESSES, language=language, Text=Text)
 
-# settings page with a form to edit the settings
+# settings page
 @app.route('/settings', methods=['GET', 'POST'])
-def settings():
+def settingspage():
     if request.method == 'POST':
-        if request.form.get('form_iedntifier') == 'savesettings':
-            print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
-    return render_template('settings.html', settings=settings, language=language, Text=Text)
-
+        if request.form.get('form_identifier') == 'editsettings':
+            return PostHandler.settings_posthandler()
+    else:
+        print(TextClass().languages.keys())
+        return render_template('pages/settings.html', addresses=settings.ADDRESSES, language=language, Text=Text, installed_languages=TextClass().languages.keys(), settings=settings, all_languages=TextClass().allpossiblelanguages)
+    
 # home page with a dashboard of functionalities
 @app.route('/', methods=['GET', 'POST']) # Handle GET requests
 @app.route('/home', methods=['GET', 'POST']) # Handle GET requests
