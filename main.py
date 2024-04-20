@@ -112,30 +112,11 @@ def editclass(id):
 @app.route('/settings', methods=['GET', 'POST'])
 def settingspage():
     if request.method == 'POST':
-        if request.form.get('form_identifier') == 'language_tab':
-            # check if the button pressed to submit the form has a certain value
-            if request.form.get('submit') == 'translation_install':
-                if settings.DEBUG:
-                    print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
-                    print('Language to translate: ' + request.form.get('language_to_translate'))
-                language_to_translate = request.form.get('language_to_translate')
-                flash(f"Installing translation for {language_to_translate}...", 'warning')
-                threading.Thread(target=PostHandler.translation_install, args=(language_to_translate,)).start()
-                print("Done")
-                return redirect(url_for('settingspage'))
-        elif request.form.get('form_identifier') == 'database_tab':
-            if settings.DEBUG:
-                print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
-                print('Trying to change database settings')
-            return PostHandler.database_settings() # TODO: Implement database settings post handler
-        elif request.form.get('form_identifier') == 'backup_tab':
-            if settings.DEBUG:
-                print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
-                print('Trying change backup settings')
-            return PostHandler.backup_database() # TODO: Implement database backup post handler
+        PostHandler.settings_posthandler()
+        return redirect(url_for('settingspage'))
     else:
         if settings.DEBUG:
-            print("Loaded languages: " + str(list(TextClass().languages.values()))) # Convert dict_keys to a list and then to a string
+            print("Loaded languages: " + str(list(TextClass().languages.keys()))) # Convert dict_keys to a list and then to a string
         return render_template('pages/settings.html', addresses=settings.ADDRESSES, language=language, Text=Text, installed_languages=list(TextClass().languages.keys()), settings=settings, all_languages=TextClass().allpossiblelanguages) # Convert dict_keys to a list
     
 # home page with a dashboard of functionalities

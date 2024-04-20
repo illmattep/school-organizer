@@ -2,7 +2,7 @@ from config import settings
 import os
 import json
 from config import settings
-from translate import Translator
+from translate import Translator, translate
 
 language = settings.LANGUAGE
 
@@ -79,7 +79,17 @@ class Text:
             "chinese": "zh",
         }
         self.texts = self.valueof(language)
-
+        # check if languagepath/english.json exists
+        if not os.path.exists(settings.LANGUAGES_PATH + "/english.json"):
+            if not os.path.exists(settings.LANGUAGES_PATH):
+                if settings.DEBUG:
+                    print("Languages folder does not exist. Creating one and installing english.json...")
+                os.makedirs(settings.LANGUAGES_PATH)
+                self.translate_to_json("english")
+            else:
+                if settings.DEBUG:
+                    print("Languages folder exists but english language is missing. Installing english.json...")
+                self.translate_to_json("english")
 
     @staticmethod
     def check_language(folder_path):
@@ -98,15 +108,15 @@ class Text:
     def translate_to_json(self, to_language, from_language="en", text=english):
         language_name = to_language
         to_language = self.allpossiblelanguages.get(to_language)
-        translator = Translator(to_lang=to_language, from_lang=from_language)
+        translator = Translator(to_lang=to_language, from_lang=from_language, secret_access_key=None, debug=settings.DEBUG)
         translated_dict = {}
 
         def translate_recursive(data):
-            translated_data = {}
+            translated_data = {}                                                                                                    
             for key, value in data.items():
                 if isinstance(value, dict):
                     if settings.DEBUG:
-                        print(f"Translating {key}...")
+                        print(f"Translating {key}...")                                                                                                      
                     translated_value = translate_recursive(value)
                     if settings.DEBUG:
                         print(f"Translated {key} to {translated_value}")

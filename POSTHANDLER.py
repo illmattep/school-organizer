@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 import sqlite3
 from Text import Text as TextClass
 from config import settings
+import time
+import threading
 
 Text = TextClass().texts # Get the text dictionary
 language = settings.LANGUAGE # Get the language
@@ -60,5 +62,31 @@ class PostHandler:
             print(Text['class_added'] + ': ' + name + ', ' + str(year) + ', ' + section + ', ' + num_students + ', ' + address)
             return redirect(url_for('newclass'))
         
+
+
+    # ! SETTINGS STUFF AHEAD
+    def settings_posthandler(self):
+        if request.form.get('form_identifier') == 'language_tab':
+            # check if the button pressed to submit the form has a certain value
+            if request.form.get('submit') == 'translation_install':
+                if settings.DEBUG:
+                    print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
+                    print('Language to translate: ' + request.form.get('language_to_translate'))
+                language_to_translate = request.form.get('language_to_translate')
+                flash(f"Installing translation for {language_to_translate}...", 'warning')
+                threading.Thread(target=self.translation_install, args=(language_to_translate,)).start()
+                return redirect(url_for('settingspage'))
+        elif request.form.get('form_identifier') == 'database_tab':
+            if settings.DEBUG:
+                print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
+                print('Trying to change database settings')
+            return PostHandler.database_settings() # TODO: Implement database settings post handler
+        elif request.form.get('form_identifier') == 'backup_tab':
+            if settings.DEBUG:
+                print('SUBMIT BUTTON CLICKED FROM: ' + request.url + ' with request: ' + request.form.get('form_identifier'))
+                print('Trying change backup settings')
+            return PostHandler.backup_database() # TODO: Implement database backup post handler
+
     def translation_install(self, language_to_translate):
         TextClass().translate_to_json(language_to_translate)
+    
