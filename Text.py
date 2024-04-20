@@ -64,83 +64,19 @@ class Text:
     def __init__(self):
         self.languages = self.check_language(settings.LANGUAGES_PATH)
         self.allpossiblelanguages = {
-            "Afrikaans",
-            "Arabic",
-            "Bengali",
-            "Bulgarian",
-            "Catalan",
-            "Cantonese",
-            "Croatian",
-            "Czech",
-            "Danish",
-            "Dutch",
-            "Lithuanian",
-            "Malay",
-            "Malayalam",
-            "Panjabi",
-            "Tamil",
-            "English",
-            "Finnish",
-            "French",
-            "German",
-            "Greek",
-            "Hebrew",
-            "Hindi",
-            "Hungarian",
-            "Indonesian",
-            "Italian",
-            "Japanese",
-            "Javanese",
-            "Korean",
-            "Norwegian",
-            "Polish",
-            "Portuguese",
-            "Romanian",
-            "Russian",
-            "Serbian",
-            "Slovak",
-            "Slovene",
-            "Spanish",
-            "Swedish",
-            "Telugu",
-            "Thai",
-            "Turkish",
-            "Ukrainian",
-            "Vietnamese",
-            "Welsh",
-            "Sign language",
-            "Algerian",
-            "Aramaic",
-            "Armenian",
-            "Berber",
-            "Burmese",
-            "Bosnian",
-            "Brazilian",
-            "Bulgarian",
-            "Cypriot",
-            "Corsica",
-            "Creole",
-            "Scottish",
-            "Egyptian",
-            "Esperanto",
-            "Estonian",
-            "Finn",
-            "Flemish",
-            "Georgian",
-            "Hawaiian",
-            "Indonesian",
-            "Inuit",
-            "Irish",
-            "Icelandic",
-            "Latin",
-            "Mandarin",
-            "Nepalese",
-            "Sanskrit",
-            "Tagalog",
-            "Tahitian",
-            "Tibetan",
-            "Gypsy",
-            "Wu",
+            "arabic": "ar",
+            "deutch": "de",
+            "english": "en",
+            "spanish": "es",
+            "french": "fr",
+            "hebrew": "he",
+            "italian": "it",
+            "dutch": "nl",
+            "polish": "pl",
+            "portuguese": "pt",
+            "russian": "ru",
+            "turkish": "tr",
+            "chinese": "zh",
         }
         self.texts = self.valueof(language)
 
@@ -159,7 +95,9 @@ class Text:
         return languages
 
 
-    def translate_to_json(self, text, to_language, from_language="en"):
+    def translate_to_json(self, to_language, from_language="en", text=english):
+        language_name = to_language
+        to_language = self.allpossiblelanguages.get(to_language)
         translator = Translator(to_lang=to_language, from_lang=from_language)
         translated_dict = {}
 
@@ -195,7 +133,7 @@ class Text:
         translated_dict = translate_recursive(text)
 
         # parse to json and save as "to_language".json
-        file_path = os.path.join(settings.LANGUAGES_PATH, f"{to_language}.json")
+        file_path = os.path.join(settings.LANGUAGES_PATH, f"{language_name}.json")
         with open(file_path, 'w') as file:
             json.dump(translated_dict, file)
 

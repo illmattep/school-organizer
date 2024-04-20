@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, redirect, flash, url_for
 import sqlite3
-from Text import Text
+from Text import Text as TextClass
 from config import settings
 
-Text = Text().texts # Get the text dictionary
+Text = TextClass().texts # Get the text dictionary
 language = settings.LANGUAGE # Get the language
 c = settings.c # Get the cursor object to access the database
 conn = settings.conn # Get the connection object to the database
@@ -59,3 +59,6 @@ class PostHandler:
             flash(Text['class_added'], 'success')
             print(Text['class_added'] + ': ' + name + ', ' + str(year) + ', ' + section + ', ' + num_students + ', ' + address)
             return redirect(url_for('newclass'))
+        
+    def translation_install(self, language_to_translate):
+        TextClass().translate_to_json(language_to_translate)

@@ -10,27 +10,115 @@
 <head>
     <!--import tailwind-->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.2/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .tab {
+            display: none;
+        }
+        
+        .tab.active {
+            display: block;
+        }
+        
+        .tab-button {
+            background-color: #f1f1f1;
+            border: none;
+            color: black;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .tab-button:hover {
+            background-color: #ddd;
+        }
+        
+        .tab-button.active {
+            background-color: #ccc;
+        }
+    </style>
+    <script>
+        function openTab(tabName) {
+            var i, tabContent, tabButtons;
+            tabContent = document.getElementsByClassName("tab");
+            for (i = 0; i < tabContent.length; i++) {
+                tabContent[i].style.display = "none";
+            }
+            tabButtons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].className = tabButtons[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+        }
+    </script>
 </head>
-<form action="/settings" method="post" class="max-w-md mx-auto">
-    <input type="hidden" name="form_" value="editsettings">
-    <label for="language" class="block">Language</label>
-    <select name="language" class="w-full px-4 py-2 my-2 border rounded">
-        {% for language in installed_languages %}
-            <option value="{{ language }}" {% if language == settings['language'] %}selected{% endif %}>{{ language }}</option>
-        {% endfor %}
-        <!-- todo for language in languages -->
-    </select>   
-    <select name="language_to_translate" class="w-full px-4 py-2 my-2 border rounded">
-        {% for language in all_languages %}
-            <option value="{{ language }}">{{ language }}</option>
-        {% endfor %}
-        <!-- todo for language in languages -->
-    </select>   
-    <label for="path_database" class="block">Path database</label>
-    <input type="text" name="path_database" class="w-full px-4 py-2 my-2 border rounded" value="">
-    <label for="path_backup" class="block">Path backup</label>
+<div class="max-w-md mx-auto">
+    <div class="flex pb-5">
+        <button class="tab-button active" onclick="openTab('languageTab')">Language</button>
+        <button class="tab-button" onclick="openTab('databaseTab')">Database</button>
+        <button class="tab-button" onclick="openTab('backupTab')">Backup</button>
+    </div>
+
     
-    <button type="submit" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600">Save Changes</button>
-</form>
+    <!-- 
+    ? This is the language Tab 
+    * The language tab is used to select the language of the application
+    * The language_to_translate is used to install a new language to the application
+    * The translation_install button is used to install the selected language to the application
+    -->
+    <form method="post">
+        <input type="hidden" name="form_identifier" value="language_tab">
+        <div id="languageTab" class="tab active">
+            <label for="language" class="block">Selected Language</label>
+            <select name="language" class="w-full px-4 py-2 my-2 border rounded">
+                {% for language in installed_languages %}
+                    <option value="{{ language }}" {% if language == settings['language'] %}selected{% endif %}>{{ language }}</option>
+                {% endfor %}
+            </select>
+            <label for="language_to_translate" class="block">Install Language:</label>
+            <div class="grid row-auto">
+                <select name="language_to_translate" class="w-full px-4 py-2 my-2 border rounded">
+                    {% for language in all_languages %}
+                        <option value="{{ language }}">{{ language }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit" name="submit" value="translation_install" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 ">Install translation</button>
+            </div>
+        </div>
+    </form>
+
+
+    <!--
+    ? This is the database Tab
+    * The database tab is used to set the path of the database
+    ! first checks if its a valid path
+    TODO: add more functinoality
+    -->
+    <form method="post">
+        <input type="hidden" name="form_identifier" value="database_tab">
+        <div id="databaseTab" class="tab">
+            <label for="path_database" class="block pt-10">Path database</label>
+            <input type="text" name="path_database" class="w-full px-4 py-2 my-2 border rounded" value="{{ settings['path_database'] }}">
+            <button type="submit" name="submit" value="save_settings_changes" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 mt-10">Save Changes</button>
+        </div>
+    </form>
+
+
+    <!-- 
+    ? This is the backup Tab 
+    * The backup tab is used to set the path of the backup
+    TODO: add a list of present backups (snippet to be made in the future)
+    -->
+    <form>
+        <input type="hidden" name="form_identifier" value="backup_tab">
+        <div id="backupTab" class="tab">
+            <label for="path_backup" class="block pt-10">Path backup</label>
+            <input type="text" name="path_backup" class="w-full px-4 py-2 my-2 border rounded" value="">
+            <button type="submit" name="submit" value="save_settings_changes" class="px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-600 mt-10">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+{% include "components/errorhandler.html" %}
 
 {% endblock %}
