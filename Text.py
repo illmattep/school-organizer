@@ -2,7 +2,7 @@ from config import settings
 import os
 import json
 from config import settings
-from translate import Translator, translate
+from translate import Translator
 
 language = settings.LANGUAGE
 
@@ -56,13 +56,33 @@ class Text:
             'teachers': 'Teachers',
             'settings': 'Settings',
         },
+        'settings': {
+            'tabs': {
+                'language': 'Language',
+                'database': 'Database',
+                'backup': 'Backup',
+            },
+            'language_tab': {
+                'selected_language': 'Selected Language',
+                'install_language': 'Install Language',
+                'install_translation_button': 'Install translation',
+            },
+            'database_tab': {
+                'path_database': 'Path to local database file',
+            },
+            'backup_tab': {
+                'path_backup': 'Path to backups'
+            },
+            'submit_button_save_changes': 'Save changes',
+        },
         # Add more text lines as needed
     }
 
-    # TODO: Write the english language to json automatically
+    # TODO: Write the english language to json automatically 
+
     
     def __init__(self):
-        self.languages = self.check_language(settings.LANGUAGES_PATH)
+        print("Text class initialized")
         self.allpossiblelanguages = {
             "arabic": "ar",
             "deutch": "de",
@@ -78,7 +98,6 @@ class Text:
             "turkish": "tr",
             "chinese": "zh",
         }
-        self.texts = self.valueof(language)
         # check if languagepath/english.json exists
         if not os.path.exists(settings.LANGUAGES_PATH + "/english.json"):
             if not os.path.exists(settings.LANGUAGES_PATH):
@@ -90,6 +109,9 @@ class Text:
                 if settings.DEBUG:
                     print("Languages folder exists but english language is missing. Installing english.json...")
                 self.translate_to_json("english")
+
+        self.languages = self.check_language(settings.LANGUAGES_PATH)
+        self.texts = self.valueof(language)
 
     @staticmethod
     def check_language(folder_path):
@@ -147,11 +169,31 @@ class Text:
         with open(file_path, 'w') as file:
             json.dump(translated_dict, file)
 
-    def get_text(self, key):
+    def get_text(self, key): # * UNUSED
         return self.texts.get(key, '')
 
-    def set_text(self, key, value):
+    def set_text(self, key, value): # * UNUSED
         self.texts[key] = value
 
     def valueof(self, language):
         return self.english if language == 'english' else self.italiano
+    
+    def change_language(self, language):
+        print(f"Changing language to {language}")
+        chosen_language = language.lower()
+        print(f"Chosen language: {chosen_language}")
+        file_path = os.path.join(settings.LANGUAGES_PATH, f"{chosen_language}.json")
+        print(f"File path: {file_path}")
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as file:
+                data = json.load(file)
+                if all(voice in data for voice in Text.english.keys()):
+                    print(f"Successfully changed language to {chosen_language}")
+                    self.texts = data
+                    print(self.texts)
+                else:
+                    print(f"The {chosen_language}.json file does not contain all the required keys.")
+        else:
+            print(f"The {chosen_language}.json file does not exist.")
+
+TextClassobj = Text()

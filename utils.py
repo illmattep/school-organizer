@@ -1,6 +1,9 @@
-from flask import Markup, request, render_template, Flask
+from flask import Markup
 
 class Utils:
+
+    # Function to get the pagination links
+    # * IS USED TO PAGINATE LISTS OF ITEMS LIKE TABLES
     def get_pagination_links(self, current_page, total_pages):
         links = []
         for page in range(1, total_pages + 1):

@@ -1,15 +1,15 @@
-from flask import Flask, render_template, request, redirect, flash, url_for
-import sqlite3
-from Text import Text as TextClass
+from flask import Flask, render_template, request, redirect, url_for
+from Text import TextClassobj
 from config import settings
 from POSTHANDLER import PostHandler
 from flask_sqlalchemy import SQLAlchemy # Import the SQLAlchemy class from the flask_sqlalchemy module to work with the database
 from flask_paginate import Pagination, get_page_parameter
 from utils import Utils
-import time
-import threading
+from subjects import SubjectManagerobj
+from teachers import TeacherManagerobj
+from classes import ClassManagerobj
 
-Text = TextClass().texts # Get the text dictionary
+ # Get the text dictionary
 language = settings.LANGUAGE # Get the language
 c = settings.c # Get the cursor object to access the database
 conn = settings.conn # Get the connection object to the database
@@ -21,29 +21,11 @@ app = Flask(__name__) # Create the Flask app
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///settings.db' # Set the URI for the database
 db = SQLAlchemy(app)
 app.secret_key = 'b3dsm0v3rs' # Set the secret key for the app
-# Create the 'classes' table in the database
-c.execute('''CREATE TABLE IF NOT EXISTS classes (
-                id INTEGER PRIMARY KEY,
-                name TEXT,
-                year INTEGER,
-                num_students INTEGER,
-                creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                modification_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                section TEXT,
-                address TEXT)''')
-conn.commit() # Commit the changes to the database 
-
-# Check if the 'classes' table was created
-c.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='classes'")
-if c.fetchone():
-    print("The 'classes' table is working.")
-else:
-    print("Failed to create the 'classes' table.")
 
 # Inject the Text object into the context of the app
 @app.context_processor
 def inject_text():
-    return dict(Text=Text)
+    return dict(Text=TextClassobj.texts)
 
 # newclass page with a form to add a new class
 @app.route('/newclass', methods=['GET', 'POST']) # Handle GET and POST requests
@@ -54,15 +36,12 @@ def newclass(): # Function to handle the main page request
         # Get all classes from the database
         c.execute("SELECT * FROM classes") # Execute an SQL query to select all rows from the 'classes' table
         classes = c.fetchall() # Fetch all rows from the result of the query    
-        return render_template('pages/addnewclass.html', classes=classes, addresses=settings.ADDRESSES, language=language, Text=Text) # Render the 'index.html' template with the classes, addresses, language, and Text object
+        return render_template('pages/addnewclass.html', classes=classes, addresses=settings.ADDRESSES, language=language) # Render the 'index.html' template with the classes, addresses, language, and Text object
 
 # delete class page with a form to delete a class
 @app.route('/deleteclass/<int:id>', methods=['POST'])
 def deleteclass(id):
-    # Execute the SQL command to delete the class
-    c.execute("DELETE FROM classes WHERE id = ?", (id,))
-    # Commit the changes
-    conn.commit()
+    ClassManagerobj.delete_class(id) # Delete the class with the specified ID
     # Redirect back to the class list
     return redirect(url_for('classlist'))
 
@@ -93,7 +72,7 @@ def classlist():
         pagination = Pagination(page=page, total=total, per_page=per_page, search=search, record_name='classes')
         pagination_links = utils.get_pagination_links(page, pagination.total_pages)
 
-        return render_template('pages/viewclasses.html', classes=classes, addresses=settings.ADDRESSES, language=language, Text=Text, pagination=pagination, pagination_links=pagination_links) 
+        return render_template('pages/viewclasses.html', classes=classes, addresses=settings.ADDRESSES, language=language, pagination=pagination, pagination_links=pagination_links) 
 
 # edit class page with a form to edit a class
 @app.route('/editclass/<int:id>', methods=['GET', 'POST'])
@@ -102,11 +81,11 @@ def editclass(id):
         if request.form.get('form_identifier') == 'editclassfromlist':
             c.execute("SELECT * FROM classes WHERE id = ?", (id,))
             class_data = c.fetchone()
-            return render_template('pages/editclass.html', class_data=class_data, addresses=settings.ADDRESSES, language=language, Text=Text)
+            return render_template('pages/editclass.html', class_data=class_data, addresses=settings.ADDRESSES, language=language)
     else:
         c.execute("SELECT * FROM classes WHERE id = ?", (id,))
         class_data = c.fetchone()
-        return render_template('pages/editclass.html', class_data=class_data, addresses=settings.ADDRESSES, language=language, Text=Text)
+        return render_template('pages/editclass.html', class_data=class_data, addresses=settings.ADDRESSES, language=language)
 
 # settings page
 @app.route('/settings', methods=['GET', 'POST'])
@@ -116,8 +95,8 @@ def settingspage():
         return redirect(url_for('settingspage'))
     else:
         if settings.DEBUG:
-            print("Loaded languages: " + str(list(TextClass().languages.keys()))) # Convert dict_keys to a list and then to a string
-        return render_template('pages/settings.html', addresses=settings.ADDRESSES, language=language, Text=Text, installed_languages=list(TextClass().languages.keys()), settings=settings, all_languages=TextClass().allpossiblelanguages) # Convert dict_keys to a list
+            print("Loaded languages: " + str(list(TextClassobj.check_language(settings.LANGUAGES_PATH)))) # Convert dict_keys to a list and then to a string
+        return render_template('pages/settings.html', addresses=settings.ADDRESSES, language=language, installed_languages=list(TextClassobj.check_language(settings.LANGUAGES_PATH)), settings=settings, all_languages=TextClassobj.allpossiblelanguages) # Convert dict_keys to a list
     
 # home page with a dashboard of functionalities
 @app.route('/', methods=['GET', 'POST']) # Handle GET requests
@@ -132,7 +111,7 @@ def home():
     # Get all classes from the database
     c.execute("SELECT * FROM classes")
     classes = c.fetchall()
-    return render_template('pages/home.html', classes=classes, addresses=settings.ADDRESSES, language=language, Text=Text)
+    return render_template('pages/home.html', classes=classes, addresses=settings.ADDRESSES, language=language)
 
 
 if __name__ == '__main__':

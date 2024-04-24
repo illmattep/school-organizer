@@ -19,30 +19,27 @@ class Config:
         self.CLASS_YEARS = list(range(1, self.NUM_YEARS + 1))
 
         # List of addresses
-        if self.LANGUAGE == 'english':
-            self.ADDRESSES = [
-                "Computer Science",
-                "Electrical Engineering",
-                "Mechanical Engineering",
-            ]
-        elif self.LANGUAGE == 'italiano':
-            self.ADDRESSES = [
-                "Informatica",
-                "Elettrotecnica",
-                "Meccanica",
-            ]
+        self.ADDRESSES = [
+            "Computer Science",
+            "Electrical Engineering",
+            "Mechanical Engineering",
+        ]
 
-        # Translations set to make the values consistent on the database
-        self.TRANSLATIONS = {
-            'english_to_italian': {
-                'Computer Science': 'Informatica',
-                'Electrical Engineering': 'Elettrotecnica',
-                'Mechanical Engineering': 'Meccanica',
-            },
-            'italian_to_english': {
-                'Informatica': 'Computer Science',
-                'Elettrotecnica': 'Electrical Engineering',
-                'Meccanica': 'Mechanical Engineering',
+        self.SUBJECTS = {
+            'all_addresses': {
+                'italian',
+                'english',
+                'math',
+                'science',
+                'history',
+                'geography',
+                'art',
+                'music',
+                'physical education',
+                'computer science',
+                'electrical engineering',
+                'mechanical engineering',
+
             }
         }
 
